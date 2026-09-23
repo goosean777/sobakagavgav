@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мир Собак — Все о верных друзьях</title>
+    <style>
+        /* Сброс стилей и переменные */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #6b4226;
+            --accent-color: #e07a5f;
+            --bg-color: #f4f1de;
+            --card-bg: #ffffff;
+            --text-color: #3d405b;
+            --light-text: #6c757d;
+        }
+
+        /* Кастомный курсор в виде лапки собаки */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24'%3E%3Ccircle cx='6' cy='9' r='2' fill='%236b4226'/%3E%3Ccircle cx='10' cy='7' r='2' fill='%236b4226'/%3E%3Ccircle cx='14' cy='7' r='2' fill='%236b4226'/%3E%3Ccircle cx='18' cy='9' r='2' fill='%236b4226'/%3E%3Cellipse cx='12' cy='15' rx='5' ry='4' fill='%236b4226'/%3E%3C/svg%3E") 16 16, auto;
+        }
+
+        a, button, .breed-card, .close-btn {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24'%3E%3Ccircle cx='6' cy='9' r='2' fill='%23e07a5f'/%3E%3Ccircle cx='10' cy='7' r='2' fill='%23e07a5f'/%3E%3Ccircle cx='14' cy='7' r='2' fill='%23e07a5f'/%3E%3Ccircle cx='18' cy='9' r='2' fill='%23e07a5f'/%3E%3Cellipse cx='12' cy='15' rx='5' ry='4' fill='%23e07a5f'/%3E%3C/svg%3E") 16 16, pointer !important;
+        }
+
+        /* Навигация */
+        header {
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Главный баннер */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                        url('https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #d06043;
+            transform: translateY(-2px);
+        }
+
+        /* Контейнер */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--light-text);
+            margin-bottom: 2.5rem;
+        }
+
+        /* Сетка пород */
+        .breeds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        .breed-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .breed-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+
+        .breed-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .breed-card-body {
+            padding: 1.2rem;
+            text-align: center;
+        }
+
+        .breed-card-body h3 {
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .click-hint {
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        /* Всплывающее окно (Модальное окно) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            max-width: 650px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            transition: background 0.2s;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .modal-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .modal-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            background: var(--bg-color);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            font-size: 0.95rem;
+        }
+
+        .detail-item strong {
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .modal-description {
+            line-height: 1.7;
+            color: var(--text-color);
+        }
+
+        /* Интерактивный генератор фактов */
+        .facts-section {
+            background-color: #f2cc8f;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .fact-box {
+            font-size: 1.2rem;
+            margin: 1.5rem 0;
+            min-height: 60px;
+            font-style: italic;
+        }
+
+        /* Подвал */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 10px; }
+            .hero h1 { font-size: 2rem; }
+            .modal-img { height: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Шапка сайта -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">🐾 Мир Собак</div>
+            <ul class="nav-links">
+                <li><a href="#breeds">Породы</a></li>
+                <li><a href="#facts">Интересные факты</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Главный баннер -->
+    <section class="hero">
+        <h1>Самые верные друзья человека</h1>
+        <p>Нажмите на любую породу, чтобы узнать ее секреты, характер и особенности ухода!</p>
+        <a href="#breeds" class="btn">Выбрать породу</a>
+    </section>
+
+    <!-- Галерея пород -->
+    <section id="breeds" class="container">
+        <h2 class="section-title">Каталог пород</h2>
+        <p class="section-subtitle">Кликните на карточку, чтобы открыть подробную информацию</p>
+        
+        <div class="breeds-grid" id="breedsGrid">
+            <!-- Карточки сгенерируются с помощью JS -->
+        </div>
+    </section>
+
+    <!-- Факты -->
+    <section id="facts" class="container">
+        <div class="facts-section">
+            <h2>Интересный факт о собаках</h2>
+            <div class="fact-box" id="factText">
+                Нажмите на кнопку ниже, чтобы узнать что-то новое!
+            </div>
+            <button class="btn" onclick="getRandomFact()">Получить факт 🐾</button>
+        </div>
+    </section>
+
+    <!-- Модальное окно для детальной информации -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <img id="modalImg" class="modal-img" src="" alt="">
+            <div class="modal-body">
+                <h2 id="modalTitle" class="modal-title"></h2>
+                <div class="modal-details">
+                    <div class="detail-item"><strong>🌍 Происхождение:</strong> <span id="modalOrigin"></span></div>
+                    <div class="detail-item"><strong>📏 Размер:</strong> <span id="modalSize"></span></div>
+                    <div class="detail-item"><strong>⏳ Живут:</strong> <span id="modalLifespan"></span></div>
+                    <div class="detail-item"><strong>🧠 Характер:</strong> <span id="modalTemperament"></span></div>
+                </div>
+                <div class="modal-description" id="modalDescription"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подвал -->
+    <footer>
+        <p>&copy; 2026 Мир Собак. Сделано с любовью к четвероногим друзьям.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // База данных пород
+        const breedsData = [
+            {
+                id: 'labrador',
+                name: 'Лабрадор ретривер',
+                image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=800&q=80',
+                origin: 'Канада / Великобритания',
+                size: 'Крупный (55-62 см, 25-36 кг)',
+                lifespan: '10 - 12 лет',
+                temperament: 'Дружелюбный, умный, ласковый',
+                description: 'Лабрадоры — одна из самых популярных пород в мире. Они невероятно добрые, прекрасно ладят с детьми и другими животными. Из них получаются отличные поводыри, спасатели и просто верные семейные компаньоны.'
+            },
+            {
+                id: 'shepherd',
+                name: 'Немецкая овчарка',
+                image: 'https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?auto=format&fit=crop&w=800&q=80',
+                origin: 'Германия',
+                size: 'Крупный (55-65 см, 22-40 кг)',
+                lifespan: '9 - 13 лет',
+                temperament: 'Преданный, бесстрашный, обучаемый',
+                description: 'Универсальная служебная собака. Немецкие овчарки обладают высоким интеллектом и выносливостью. Они превосходные защитники семьи, легко поддаются дрессировке и часто работают в полиции и службе спасения.'
+            },
+            {
+                id: 'corgi',
+                name: 'Вельш-корги пемброк',
+                image: 'https://images.unsplash.com/photo-1612536057832-2ff7ead7819c?auto=format&fit=crop&w=800&q=80',
+                origin: 'Великобритания (Уэльс)',
+                size: 'Маленький (25-30 см, 10-12 кг)',
+                lifespan: '12 - 15 лет',
+                temperament: 'Веселый, жизнерадостный, общительный',
+                description: 'Любимая порода британской королевской семьи. Несмотря на короткие лапки, корги очень активны, любопытны и обладают огромным очарованием. Они обожают игры и постоянное внимание.'
+            },
+            {
+                id: 'husky',
+                name: 'Сибирский хаски',
+                image: 'https://images.unsplash.com/photo-1605568427561-40dd23c2acea?auto=format&fit=crop&w=800&q=80',
+                origin: 'Россия (Сибирь)',
+                size: 'Средний (50-60 см, 16-27 кг)',
+                lifespan: '12 - 14 лет',
+                temperament: 'Энергичный, вольный, дружелюбный',
+                description: 'Ездовая собака с ярко-голубыми или heterochromatic (разноцветными) глазами. Хаски невероятно выносливы, любят долгие беговые прогулки и общение, но требуют активного образа жизни от владельца.'
+            },
+            {
+                id: 'frenchie',
+                name: 'Французский бульдог',
+                image: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=800&q=80',
+                origin: 'Франция',
+                size: 'Маленький (28-35 см, 8-14 кг)',
+                lifespan: '10 - 12 лет',
+                temperament: 'Игривый, ласковый, спокойный',
+                description: 'Компактная собака-компаньон с характерными "мышиными" ушками. Отлично подходит для жизни в квартире, не требует длительных нагрузок и обожает проводить время на диване рядом с хозяином.'
+            },
+            {
+                id: 'poodle',
+                name: 'Пудель',
+                image: 'https://images.unsplash.com/photo-1561037404-61cd46aa615b?auto=format&fit=crop&w=800&q=80',
+                origin: 'Франция / Германия',
+                size: 'Разный (от 24 до 60 см)',
+                lifespan: '12 - 18 лет',
+                temperament: 'Очень умный, гордый, активный',
+                description: 'Занимает второе место в мире по интеллекту среди собак. Пудели почти не линяют, легко обучаются любым трюкам и бывают разных размеров: от миниатюрных тоев до грациозных королевских пуделей.'
+            },
+            {
+                id: 'shiba',
+                name: 'Сиба-ину',
+                image: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=800&q=80',
+                origin: 'Япония',
+                size: 'Средний (35-41 см, 8-10 кг)',
+                lifespan: '12 - 15 лет',
+                temperament: 'Независимый, сдержанный, преданный',
+                description: 'Древняя японская порода, внешне похожая на маленькую лисичку. Сиба-ину отличаются чистоплотностью, своенравным характером и преданностью только своему хозяину.'
+            },
+            {
+                id: 'beagle',
+                name: 'Бигль',
+                image: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=800&q=80',
+                origin: 'Великобритания',
+                size: 'Средний (33-40 см, 9-11 кг)',
+                lifespan: '12 - 15 лет',
+                temperament: 'Любопытный, жизнерадостный, упрямый',
+                description: 'Охотничья гончая порода с феноменальным чутьем и длинными ушами. Бигли всегда готовы к приключениям, любят исследовательские прогулки и очень дружелюбны к детям.'
+            }
+        ];
+
+        // Отрисовка карточек
+        function renderBreeds() {
+            const grid = document.getElementById('breedsGrid');
+            grid.innerHTML = breedsData.map(breed => `
+                <div class="breed-card" onclick="openModal('${breed.id}')">
+                    <img src="${breed.image}" alt="${breed.name}">
+                    <div class="breed-card-body">
+                        <h3>${breed.name}</h3>
+                        <span class="click-hint">Нажми, чтобы узнать больше 🐾</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Открытие модального окна
+        function openModal(breedId) {
+            const breed = breedsData.find(b => b.id === breedId);
+            if (!breed) return;
+
+            document.getElementById('modalImg').src = breed.image;
+            document.getElementById('modalTitle').textContent = breed.name;
+            document.getElementById('modalOrigin').textContent = breed.origin;
+            document.getElementById('modalSize').textContent = breed.size;
+            document.getElementById('modalLifespan').textContent = breed.lifespan;
+            document.getElementById('modalTemperament').textContent = breed.temperament;
+            document.getElementById('modalDescription').textContent = breed.description;
+
+            document.getElementById('modalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Запрет прокрутки заднего фона
+        }
+
+        // Закрытие модального окна
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeModalOnOverlay(e) {
+            if (e.target.id === 'modalOverlay') {
+                closeModal();
+            }
+        }
+
+        // Закрытие по клавише Esc
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Случайные факты
+        const facts = [
+            "Обоняние собаки примерно в 10 000–100 000 раз острее, чем у человека.",
+            "Отпечаток носа каждой собаки уникален, как и отпечатки пальцев у людей.",
+            "Собаки способны понимать до 250 слов и жестов.",
+            "Щенки рождаются слепыми, глухими и без зубов.",
+            "Единственные потовые железы у собак находятся на подушечках лап.",
+            "Собаки умеют чувствовать время и скучают, когда хозяина долго нет."
+        ];
+
+        function getRandomFact() {
+            const factTextElement = document.getElementById('factText');
+            const randomIndex = Math.floor(Math.random() * facts.length);
+            factTextElement.textContent = facts[randomIndex];
+        }
+
+        // Инициализация при загрузке
+        renderBreeds();
+    </script>
+</body>
+</html>
